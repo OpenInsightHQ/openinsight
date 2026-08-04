@@ -1,0 +1,22 @@
+services:
+  openinsight-pi-agent:
+    image: ghcr.io/openinsightbh/pi-runtime:latest
+    container_name: openinsight-pi-agent
+    user: root
+    networks:
+      - openinsight_default
+#    ports:
+#      - "13300:3000"
+    env_file:
+      - .env
+    environment:
+      - HOME=/home/codeuser
+    volumes:
+      - ./pi-data:/home/codeuser/.pi
+      - ./skill-repo:/app/skill-repo
+    working_dir: /app
+    command: npx pi --http --http-port ${PI_HTTP_PORT:-3000} --provider ${PI_PROVIDER} --model ${PI_MODEL}
+    restart: unless-stopped
+networks:
+  openinsight_default:
+    external: true

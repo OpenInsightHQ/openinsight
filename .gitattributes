@@ -1,0 +1,9 @@
+# Use LF line endings for text files
+* text=auto eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+*.bash text eol=lf
+
+# Python
+*.py text eol=lf

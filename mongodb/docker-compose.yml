@@ -1,0 +1,26 @@
+services:
+  openinsight-mongodb:
+    container_name: openinsight-mongodb
+      #ports:  # Uncomment this to access mongodb from outside docker, not safe in deployment
+      # - 27017:27017
+    image: mongo:8.0.17
+    networks:
+      - openinsight_default
+    restart: always
+    volumes:
+      - ./data:/data/db
+      # 首次初始化（data 目录为空）时由 mongo 官方 entrypoint 自动执行，创建下方两个账号
+      - ./init:/docker-entrypoint-initdb.d:ro
+    environment:
+      # 供 /docker-entrypoint-initdb.d/create-users.sh 读取
+      - MONGO_ROOT_USERNAME=mongoadmin
+      - MONGO_ROOT_PASSWORD=
+      - MONGO_APP_USERNAME=librechat
+      - MONGO_APP_PASSWORD=
+      - MONGO_READONLY_USERNAME=librechat_readonly
+      - MONGO_READONLY_PASSWORD=
+    command: mongod --auth
+
+networks:
+  openinsight_default:
+    external: true

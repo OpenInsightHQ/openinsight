@@ -1,0 +1,21 @@
+services:
+  openinsight-mongo-express:
+    image: mongo-express:latest
+    container_name: openinsight-mongo-express
+    environment:
+      ME_CONFIG_MONGODB_SERVER: openinsight-mongodb
+      ME_CONFIG_MONGODB_URL: mongodb://mongoadmin:@openinsight-mongodb:27017/?authSource=admin
+      ME_CONFIG_MONGODB_ADMINUSERNAME: mongoadmin
+      ME_CONFIG_MONGODB_ADMINPASSWORD:
+      ME_CONFIG_BASICAUTH_USERNAME: mongoadmin
+      ME_CONFIG_BASICAUTH_PASSWORD:
+    ports:
+      - "18081:8081"
+    restart: always
+    networks:
+      - openinsight_default
+
+networks:
+  openinsight_default:
+    external: true  
+

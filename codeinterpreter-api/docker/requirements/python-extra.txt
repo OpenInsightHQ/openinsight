@@ -1,0 +1,11 @@
+# Extra packages requested for the Python environment
+curl_cffi
+pydantic-settings
+massive
+yfinance
+mcp
+fastmcp
+uvicorn
+starlette
+fastapi
+psutil

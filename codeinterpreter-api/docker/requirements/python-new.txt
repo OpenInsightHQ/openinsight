@@ -1,0 +1,32 @@
+# NEW packages - useful for LLM-generated code
+# These are additions to improve usefulness
+
+# HTTP clients (useful when network enabled)
+requests>=2.31
+httpx>=0.25
+
+# Data validation
+pydantic>=2.5
+
+# CLI and output formatting
+rich>=13.7
+click>=8.1
+typer>=0.9
+
+# Data generation and formatting
+faker>=22.0
+humanize>=4.9
+
+# Date/time handling
+pendulum>=3.0
+
+# Configuration
+python-dotenv>=1.0
+toml>=0.10
+pyyaml>=6.0
+
+# Audio (already have SpeechRecognition, add basic support)
+SpeechRecognition>=3.10
+
+# Email
+IMAPClient>=3.0

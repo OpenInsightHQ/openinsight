@@ -1,0 +1,23 @@
+# IDE
+.idea/
+.vscode/
+
+# 环境配置（含敏感密钥，由 init-env.sh 自动生成）
+/env.sh
+**/.env
+!**/.env.example
+
+# 生成数据目录
+*/data/
+
+# 程序包与镜像归档
+*.jar
+*.tar.gz
+*.zip
+*.war
+project-implementation.zip
+docker-images.tar.gz
+docker-images/
+
+# 备份目录
+*/apps/*_*/

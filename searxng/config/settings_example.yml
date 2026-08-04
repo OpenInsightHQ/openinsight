@@ -1,0 +1,59 @@
+# China-friendly engines (snippet for settings.yml)
+# Note: chinaso engines are included here; review privacy considerations before use.
+engines:
+  - name: 360search
+    disabled: false
+
+  - name: 360search videos
+    disabled: false
+
+  - name: baidu
+    disabled: false
+
+  - name: baidu images
+    disabled: false
+
+  - name: baidu kaifa
+    disabled: false
+
+  - name: sogou
+    disabled: false
+
+  - name: sogou images
+    disabled: false
+
+  - name: sogou videos
+    disabled: false
+
+  - name: sogou wechat
+    disabled: false
+
+  - name: quark
+    disabled: false
+
+  - name: quark images
+    disabled: false
+
+  - name: bilibili
+    disabled: false
+
+  - name: bing
+    disabled: false
+
+  - name: bing images
+    disabled: false
+
+  - name: bing news
+    disabled: false
+
+  - name: bing videos
+    disabled: false
+
+  - name: chinaso news
+    disabled: false
+
+  - name: chinaso images
+    disabled: false
+
+  - name: chinaso videos
+    disabled: false

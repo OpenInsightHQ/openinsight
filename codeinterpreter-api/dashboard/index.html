@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Interpreter Admin Dashboard</title>
+    <link rel="stylesheet" href="/admin-dashboard/static/css/style.css">
+    <!-- Chart.js for metrics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="dark-theme">
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <i data-lucide="terminal" class="logo-icon"></i>
+                <span class="logo-text">Admin Panel</span>
+            </div>
+            <ul class="nav-links">
+                <li class="active" data-tab="overview">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Overview</span>
+                </li>
+                <li data-tab="api-keys">
+                    <i data-lucide="key"></i>
+                    <span>API Keys</span>
+                </li>
+                <li data-tab="system-health">
+                    <i data-lucide="activity"></i>
+                    <span>System Health</span>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="auth-status">
+                    <i data-lucide="user-check"></i>
+                    <span id="master-key-status">Protected</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="content">
+            <header class="top-bar">
+                <h1 id="page-title">Overview</h1>
+                <div class="actions">
+                    <button id="refresh-btn" class="btn btn-icon">
+                        <i data-lucide="refresh-cw"></i>
+                    </button>
+                    <button id="setup-auth-btn" class="btn btn-primary">
+                        <i data-lucide="lock"></i> Set Master Key
+                    </button>
+                </div>
+            </header>
+
+            <section id="overview-tab" class="tab-content active">
+                <!-- Filter Bar -->
+                <div class="filter-bar">
+                    <div class="period-selector">
+                        <button class="period-btn" data-period="hour">1H</button>
+                        <button class="period-btn active" data-period="day">24H</button>
+                        <button class="period-btn" data-period="week">7D</button>
+                        <button class="period-btn" data-period="month">30D</button>
+                    </div>
+                    <div class="date-range-picker">
+                        <input type="date" id="start-date" title="Start Date">
+                        <span class="date-separator">to</span>
+                        <input type="date" id="end-date" title="End Date">
+                        <button id="apply-date-range" class="btn btn-sm">Apply</button>
+                    </div>
+                    <div class="api-key-filter">
+                        <select id="api-key-select">
+                            <option value="">All API Keys</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon cpu"><i data-lucide="zap"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">Executions</span>
+                            <span class="stat-value" id="stat-exec-hour">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon success"><i data-lucide="check-circle"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">Success Rate</span>
+                            <span class="stat-value" id="stat-success-rate">0%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon memory"><i data-lucide="layers"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">Avg Duration</span>
+                            <span class="stat-value" id="stat-avg-time">0ms</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon pool"><i data-lucide="box"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">Pool Hit Rate</span>
+                            <span class="stat-value" id="stat-pool-hit">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container chart-wide">
+                        <h3>Execution Trends</h3>
+                        <canvas id="timeSeriesChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Language Usage by API Key</h3>
+                        <canvas id="stackedLanguageChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Activity Heatmap</h3>
+                        <div id="heatmapContainer" class="heatmap-wrapper"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="api-keys-tab" class="tab-content">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>Managed API Keys</h2>
+                        <button id="create-key-btn" class="btn btn-success">
+                            <i data-lucide="plus"></i> Create New Key
+                        </button>
+                    </div>
+                    <table id="keys-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Prefix</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Usage</th>
+                                <th>Rate Limits</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="keys-tbody">
+                            <!-- JS will populate this -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="system-health-tab" class="tab-content">
+                <div class="health-grid" id="health-grid">
+                    <!-- JS will populate this -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Modals -->
+        <div id="modal-container" class="modal-overlay">
+            <!-- Dynamic Modals -->
+        </div>
+    </div>
+
+    <!-- Auth Modal Overlay -->
+    <div id="auth-modal" class="modal-overlay active">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Admin Login</h2>
+            </div>
+            <div class="modal-body">
+                <p>Please enter your <code>MASTER_API_KEY</code> to access the dashboard.</p>
+                <div class="form-group">
+                    <label for="master-key-input">Master API Key</label>
+                    <input type="password" id="master-key-input" placeholder="Enter Master API Key">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="login-btn" class="btn btn-primary">Unlock Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/admin-dashboard/static/js/app.js"></script>
+</body>
+</html>

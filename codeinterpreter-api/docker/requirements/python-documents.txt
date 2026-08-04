@@ -1,0 +1,41 @@
+# Document processing packages (PDF, Office, etc.)
+
+# PDF
+PyPDF2>=3.0
+pdfminer.six>=20221105
+pdfminer>=20191125
+pdf2image>=1.16
+reportlab>=4.0
+
+# Office documents
+python-docx>=1.1
+python-pptx>=0.6
+mammoth>=1.6
+docx2txt>=0.8
+docx2python>=2.0
+docxcompose>=1.4
+docxtpl>=0.16
+doc2pdf>=0.2
+
+# XML/HTML parsing
+beautifulsoup4>=4.12
+lxml>=4.9
+soupsieve>=2.5
+defusedxml>=0.7
+cssselect2>=0.7
+webencodings>=0.5
+tinycss2>=1.2
+
+# Text extraction
+textract-py3>=1.5
+antiword>=0.1
+pytesseract>=0.3
+pypandoc>=1.12
+
+# Other formats
+vsdx>=0.5
+compressed-rtf>=1.0
+extract-msg>=0.47
+olefile>=0.47
+ebcdic>=1.1
+ExifRead>=3.0

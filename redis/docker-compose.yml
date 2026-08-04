@@ -1,0 +1,32 @@
+services:
+  openinsight-redis:
+    image: redis:7.2.11
+    container_name: openinsight-redis
+      #ports:
+      # Expose to localhost for CLI tools
+      # - "127.0.0.1:16379:6379"
+    environment:
+      - REDIS_PASSWORD=
+    command: >
+      sh -c "
+        if [ -n \"$$REDIS_PASSWORD\" ]; then
+          redis-server --requirepass $$REDIS_PASSWORD --appendonly yes --appendfsync everysec
+        else
+          redis-server --appendonly yes --appendfsync everysec
+        fi
+      "
+    volumes:
+      - ./data:/data
+      - ./conf/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    networks:
+      - openinsight_default
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  openinsight_default:
+    external: true  

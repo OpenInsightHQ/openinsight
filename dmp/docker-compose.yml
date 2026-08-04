@@ -1,0 +1,55 @@
+services:
+  openinsight-dmp-nginx:
+    container_name: openinsight-dmp-nginx
+    restart: always
+    environment:
+    - TZ=Asia/Shanghai
+    image: ghcr.io/openinsightbh/dmp-nginx:latest
+    env_file:
+      - .env
+    networks:
+      - openinsight_default
+    depends_on:
+      - openinsight-dmp-api
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -s 127.0.0.1:80 > /dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    ports:
+    - ${DMP_PUBLIC_WEB_PORT}:80
+
+  openinsight-dmp-api:
+    container_name: openinsight-dmp-api
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+      - MYSQL_HOST=${DMP_MYSQL_HOST}
+      - MYSQL_PORT=${DMP_MYSQL_PORT}
+      - DB_NAME=${DMP_DB_NAME}
+      - MYSQL_USERNAME=${DMP_MYSQL_USERNAME}
+      - MYSQL_PASSWORD=${DMP_MYSQL_PASSWORD}
+      - REDIS_HOST=${DMP_REDIS_HOST}
+      - REDIS_PORT=${DMP_REDIS_PORT}
+      - REDIS_DATABASE=${DMP_REDIS_DATABASE}
+      - REDIS_PASSWORD=${DMP_REDIS_PASSWORD}
+      - MONGODB_URI=${MONGODB_URI}
+      - AGENT_PLATFORM_BASE_URL=${AGENT_PLATFORM_BASE_URL}
+    image: ghcr.io/openinsightbh/dmp-api:latest
+    env_file:
+      - .env
+    networks:
+      - openinsight_default
+    privileged: true
+    volumes:
+      - ./data:/data
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -s 127.0.0.1:8090 > /dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  openinsight_default:
+    external: true

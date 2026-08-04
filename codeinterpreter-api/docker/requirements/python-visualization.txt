@@ -1,0 +1,15 @@
+# Visualization and graphics packages
+
+matplotlib>=3.8
+seaborn>=0.13
+plotly>=5.18
+pillow>=10.0
+imageio>=2.33
+scikit-image>=0.22
+opencv-python-headless>=4.8
+pygame>=2.5
+contourpy>=1.2
+cycler>=0.12
+fonttools>=4.47
+lazy-loader>=0.3
+tifffile>=2024.1

@@ -1,0 +1,35 @@
+# Node.js global packages
+# One package per line for npm install -g
+
+lodash
+axios
+moment
+uuid
+chalk
+commander
+express
+fs-extra
+csv-parser
+json2csv
+papaparse
+archiver
+yauzl
+pdf-lib
+date-fns
+validator
+crypto-js
+mathjs
+ml-matrix
+simple-statistics
+sharp
+jimp
+typescript
+ts-node
+# NEW packages
+xlsx
+exceljs
+luxon
+zod
+handlebars
+cheerio
+marked

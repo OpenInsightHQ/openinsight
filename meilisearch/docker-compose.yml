@@ -1,0 +1,22 @@
+#version: "3"
+services:
+  openinsight-meilisearch:
+    container_name: openinsight-meilisearch
+    image: getmeili/meilisearch:v1.12.3
+    networks:
+      - openinsight_default
+    env_file:
+      - .env
+    restart: always
+    # ports: # Uncomment this to access meilisearch from outside docker
+    #   - 7700:7700 # if exposing these ports, make sure your master key is not the default value
+    environment:
+      - MEILI_HOST=http://openinsight-meilisearch:7700
+      - MEILI_NO_ANALYTICS=true
+    volumes:
+      - ./data:/meili_data
+
+networks:
+  openinsight_default:
+    external: true
+

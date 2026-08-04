@@ -1,0 +1,19 @@
+# Math, science, and analysis packages
+
+scipy>=1.11
+scikit-learn>=1.3
+statsmodels>=0.14
+sympy>=1.12
+mpmath>=1.3
+numba>=0.58
+llvmlite>=0.41
+numexpr>=2.8
+networkx>=3.2
+lifelines>=0.27
+autograd>=1.6
+autograd-gamma>=0.5
+formulaic>=1.0
+patsy>=0.5
+kiwisolver>=1.4
+joblib>=1.3
+threadpoolctl>=3.2

@@ -1,0 +1,49 @@
+services:
+  # MinIO for file storage
+  openinsight-minio:
+    image: minio/minio:latest
+    container_name: openinsight-minio
+    ports:
+      # API port for local testing
+      - "127.0.0.1:19000:9000"
+      # Console only, bound to localhost (access via SSH tunnel)
+      - "127.0.0.1:${MINIO_CONSOLE_PORT:-19001}:9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY:-minioadmin}
+      - MINIO_BROWSER_REDIRECT_URL=http://localhost:${MINIO_CONSOLE_PORT:-19001}
+    command: server /data --console-address ":9001"
+    volumes:
+      - ./data:/data
+    networks:
+      - openinsight_default
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # MinIO bucket initialization
+  openinsight-minio-init:
+    image: minio/mc:latest
+    container_name: openinsight-minio-init
+    depends_on:
+      - openinsight-minio
+    environment:
+      - MINIO_ENDPOINT=openinsight-minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-minioadmin}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-minioadmin}
+      - MINIO_BUCKET=${MINIO_BUCKET:-code-interpreter-files}
+      - MINIO_REPORT_BUCKET=${MINIO_REPORT_BUCKET:-openinsight-report}
+    entrypoint: >
+      /bin/sh -c " echo 'Waiting for MinIO to be ready...'; until mc alias set minio http://$$MINIO_ENDPOINT $$MINIO_ACCESS_KEY $$MINIO_SECRET_KEY; do
+        echo 'MinIO not ready, waiting...';
+        sleep 2;
+        done; echo 'MinIO is ready. Creating buckets if they do not exist...'; mc mb minio/$$MINIO_BUCKET --ignore-existing; mc mb minio/$$MINIO_REPORT_BUCKET --ignore-existing; echo 'Bucket setup complete.'; "
+    networks:
+      - openinsight_default
+
+networks:
+  openinsight_default:
+    external: true

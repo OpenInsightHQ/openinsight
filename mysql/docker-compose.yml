@@ -1,0 +1,21 @@
+services:
+  openinsight-mysql:
+    image: mysql:8.0.36
+    container_name: openinsight-mysql
+    restart: always
+    networks:
+      - openinsight_default
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+        #  ports:
+        # - 23307:3306
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./data:/var/lib/mysql:z
+      - ./conf/my.cnf:/etc/my.cnf
+      - ./logs:/var/log
+
+networks:
+  openinsight_default:
+    external: true  
+

@@ -1,0 +1,78 @@
+services:
+  # Code Interpreter API
+  openinsight-codeinterpreter-api:
+    image: ghcr.io/openinsightbh/librecodeinterpreter-api:latest
+    container_name: openinsight-code-interpreter-api
+    user: "1000:118" # Run as user with docker group access,root user comment this line
+    cap_add:
+      - NET_ADMIN  # Required for iptables management when WAN access is enabled
+    ports:
+      - "${API_PORT:-8000}:8000"
+      - "${HTTPS_PORT:-8443}:443"
+    env_file:
+      - .env
+    environment:
+      # Container-specific overrides (these override .env values)
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+
+      # Service discovery (container names)
+      - REDIS_HOST=openinsight-redis
+      - REDIS_PORT=6379
+      - MINIO_ENDPOINT=openinsight-minio:9000
+
+      # Docker socket path inside container
+      - DOCKER_BASE_URL=unix://var/run/docker.sock
+
+      # SSL paths inside container
+      - SSL_CERT_FILE=/app/ssl/cert.pem
+      - SSL_KEY_FILE=/app/ssl/key.pem
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./logs:/app/logs
+      - ./data:/app/data
+      - ${SSL_CERTS_PATH:-./ssl}:/app/ssl
+      - ./dashboard:/app/dashboard
+      - ./src:/app/src
+      - ./docker:/app/docker:ro  # Seccomp profile for container security
+    networks:
+      - openinsight_default
+    restart: unless-stopped
+    stop_grace_period: 30s # Allow time to cleanup pooled containers
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "sh",
+          "-c",
+          "curl -f -k https://localhost:443/health 2>/dev/null || curl -f http://localhost:8000/health 2>/dev/null || curl -f http://localhost:80/health || exit 1",
+        ]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 15s
+
+networks:
+  openinsight_default:
+    external: true
+  code-interpreter-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.26.0.0/16
+
+  # WAN-only network for execution containers that need internet access
+  # This network is only created when ENABLE_WAN_ACCESS=true
+  code-interpreter-wan:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.27.0.0/16
+    driver_opts:
+      # Enable NAT for outbound internet access
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+      # Disable inter-container communication
+      com.docker.network.bridge.enable_icc: "false"
+    labels:
+      com.code-interpreter.managed: "true"
+      com.code-interpreter.type: "wan-access"

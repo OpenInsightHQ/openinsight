@@ -1,0 +1,77 @@
+{
+  "defaultProfile": {
+    "name": "code-interpreter-default",
+    "description": "Default security profile for code execution containers",
+    "securityOpt": ["no-new-privileges:true"],
+    "capDrop": ["ALL"],
+    "capAdd": [],
+    "readOnly": true,
+    "networkMode": "none",
+    "tmpfs": {
+      "/tmp": "rw,noexec,nosuid,size=100m"
+    },
+    "pidsLimit": 512,
+    "ulimits": [
+      {
+        "name": "nofile",
+        "soft": 1024,
+        "hard": 1024
+      },
+      {
+        "name": "fsize",
+        "soft": 10485760,
+        "hard": 10485760
+      }
+    ],
+    "sysctls": {
+      "kernel.dmesg_restrict": "1"
+    }
+  },
+  "restrictedProfile": {
+    "name": "code-interpreter-restricted",
+    "description": "Highly restricted security profile for untrusted code",
+    "securityOpt": ["no-new-privileges:true"],
+    "capDrop": ["ALL"],
+    "capAdd": [],
+    "readOnly": true,
+    "networkMode": "none",
+    "tmpfs": {
+      "/tmp": "rw,noexec,nosuid,size=50m"
+    },
+    "pidsLimit": 256,
+    "ulimits": [
+      {
+        "name": "nofile",
+        "soft": 512,
+        "hard": 512
+      },
+      {
+        "name": "fsize",
+        "soft": 5242880,
+        "hard": 5242880
+      }
+    ],
+    "sysctls": {
+      "kernel.dmesg_restrict": "1",
+      "net.ipv4.ip_forward": "0"
+    }
+  },
+  "languageProfiles": {
+    "python": {
+      "inherits": "defaultProfile",
+      "description": "Security profile optimized for Python execution"
+    },
+    "nodejs": {
+      "inherits": "defaultProfile",
+      "description": "Security profile optimized for Node.js execution"
+    },
+    "java": {
+      "inherits": "defaultProfile",
+      "description": "Security profile optimized for Java execution"
+    },
+    "go": {
+      "inherits": "defaultProfile",
+      "description": "Security profile optimized for Go execution"
+    }
+  }
+}
