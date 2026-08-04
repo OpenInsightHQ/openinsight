@@ -4,7 +4,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "${SCRIPT_DIR}/common.sh"
 ensure_env
 
-GHCR="${GHCR_REGISTRY:-ghcr.io/openinsightbh}"
+GHCR="${GHCR_REGISTRY:-ghcr.io/openinsighthq}"
 
 IMAGES=(
   # 官方镜像

@@ -291,7 +291,7 @@ bash prepare.sh
 
 该脚本用于在能访问镜像仓库的在线环境中一次性完成所有镜像的准备工作：
 - 拉取官方镜像（MySQL、Redis、MongoDB、MinIO、Meilisearch、SearXNG 等）从 Docker Hub
-- 拉取自研镜像（ARP、DMP、PI Agent、Code Interpreter 等）从 GitHub Container Registry（`ghcr.io/openinsightbh`）
+- 拉取自研镜像（ARP、DMP、PI Agent、Code Interpreter 等）从 GitHub Container Registry（`ghcr.io/openinsighthq`）
 - 对 Code Interpreter 的 Node.js / Python 镜像执行 `docker tag` 重命名为本地短名
 
 #### 4.3.2 离线环境（无网络）
@@ -339,7 +339,7 @@ HOST_IP=192.168.1.100    # 改为实际服务器 IP
 | 配置项 | 说明 | 默认值 |
 |-------|------|--------|
 | `HOST_IP` | 部署主机 IP（**必须修改**） | （空，必须填写） |
-| `GHCR_REGISTRY` | 自研镜像仓库地址 | `ghcr.io/openinsightbh` |
+| `GHCR_REGISTRY` | 自研镜像仓库地址 | `ghcr.io/openinsighthq` |
 | `DOCKER_NETWORK` | Docker 网络名称 | `openinsight_default` |
 | `USE_EXTERNAL_MYSQL` | 是否使用外部 MySQL | `false` |
 | `USE_EXTERNAL_REDIS` | 是否使用外部 Redis | `false` |
@@ -762,7 +762,7 @@ LOG_LLM_STREAM=true
 ```env
 HOST_IP=                         # 部署主机 IP（必改）
 DOMAIN=                          # 域名（可选）
-GHCR_REGISTRY=ghcr.io/openinsightbh
+GHCR_REGISTRY=ghcr.io/openinsighthq
 DOCKER_NETWORK=openinsight_default
 TIMEZONE=Asia/Shanghai
 ```

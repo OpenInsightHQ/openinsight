@@ -1,7 +1,7 @@
 services:
   # Code Interpreter API
   openinsight-codeinterpreter-api:
-    image: ghcr.io/openinsightbh/librecodeinterpreter-api:latest
+    image: ghcr.io/openinsighthq/librecodeinterpreter-api:latest
     container_name: openinsight-code-interpreter-api
     user: "1000:118" # Run as user with docker group access,root user comment this line
     cap_add:

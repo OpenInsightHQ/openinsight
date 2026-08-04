@@ -1,6 +1,6 @@
 services:
   openinsight-pi-agent:
-    image: ghcr.io/openinsightbh/pi-runtime:latest
+    image: ghcr.io/openinsighthq/pi-runtime:latest
     container_name: openinsight-pi-agent
     user: root
     networks:

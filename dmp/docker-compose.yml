@@ -4,7 +4,7 @@ services:
     restart: always
     environment:
     - TZ=Asia/Shanghai
-    image: ghcr.io/openinsightbh/dmp-nginx:latest
+    image: ghcr.io/openinsighthq/dmp-nginx:${DMP_IMAGE_TAG:-latest}
     env_file:
       - .env
     networks:
@@ -36,7 +36,7 @@ services:
       - REDIS_PASSWORD=${DMP_REDIS_PASSWORD}
       - MONGODB_URI=${MONGODB_URI}
       - AGENT_PLATFORM_BASE_URL=${AGENT_PLATFORM_BASE_URL}
-    image: ghcr.io/openinsightbh/dmp-api:latest
+    image: ghcr.io/openinsighthq/dmp-api:${DMP_IMAGE_TAG:-latest}
     env_file:
       - .env
     networks:

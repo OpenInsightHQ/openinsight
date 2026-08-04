@@ -1,6 +1,6 @@
 services:
   openinsight-arp:
-    image: ghcr.io/openinsightbh/arp:latest
+    image: ghcr.io/openinsighthq/arp:latest
     container_name: openinsight-arp
     ports:
       - "${PORT}:${PORT}"

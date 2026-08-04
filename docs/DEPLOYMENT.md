@@ -156,7 +156,7 @@ bash prepare.sh
 
 **`prepare.sh` functionality:**
 - Pulls official images (MySQL, Redis, MongoDB, MinIO, Meilisearch, SearXNG, etc.) from Docker Hub
-- Pulls self-built images (ARP, DMP, PI Agent, Code Interpreter, etc.) from GitHub Container Registry (`ghcr.io/openinsightbh`)
+- Pulls self-built images (ARP, DMP, PI Agent, Code Interpreter, etc.) from GitHub Container Registry (`ghcr.io/openinsighthq`)
 - Tags Code Interpreter Node.js / Python images with local short names
 
 #### 4.3.2 Offline (no network)
@@ -204,7 +204,7 @@ Main `env.sh` settings:
 | Setting | Description | Default |
 |---------|-------------|---------|
 | `HOST_IP` | Server IP (**must change**) | (empty, required) |
-| `GHCR_REGISTRY` | Self-built image registry | `ghcr.io/openinsightbh` |
+| `GHCR_REGISTRY` | Self-built image registry | `ghcr.io/openinsighthq` |
 | `DOCKER_NETWORK` | Docker network name | `openinsight_default` |
 | `USE_EXTERNAL_MYSQL` | Use external MySQL | `false` |
 | `USE_EXTERNAL_REDIS` | Use external Redis | `false` |

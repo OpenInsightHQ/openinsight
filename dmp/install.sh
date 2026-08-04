@@ -53,6 +53,9 @@ sed -i "s|openinsight_default|${DOCKER_NETWORK}|g" docker-compose.yml
 
 ensure_docker_network
 
+echo "拉取最新镜像（DMP_IMAGE_TAG=${DMP_IMAGE_TAG:-latest}）..."
+docker-compose pull
+
 echo "重启 DMP 容器..."
 docker-compose down
 docker-compose up -d

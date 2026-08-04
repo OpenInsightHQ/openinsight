@@ -21,7 +21,7 @@ services:
 
 
   openinsight-mcp-searxng:
-    image: ghcr.io/openinsightbh/mcp-searxng:latest
+    image: ghcr.io/openinsighthq/mcp-searxng:latest
     container_name: openinsight-mcp-searxng
     restart: unless-stopped
     environment:
@@ -35,7 +35,7 @@ services:
       - openinsight_default
 
   openinsight-mcp-searxng-proxy:
-    image: ghcr.io/openinsightbh/mcp-searxng-proxy:latest
+    image: ghcr.io/openinsighthq/mcp-searxng-proxy:latest
     container_name: openinsight-mcp-searxng-proxy
     restart: unless-stopped
     environment:
