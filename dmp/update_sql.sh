@@ -70,7 +70,7 @@ version_compare() {
 
 echo "当前已部署版本 ${CURRENT_VERSION}，将执行 (${CURRENT_VERSION}, ${DMP_VERSION}] 范围内的更新脚本"
 
-SQL_BASE_URL="${SQL_DOWNLOAD_URL:-https://github.com/OpenInsightBH/openinsight/releases/latest/download/sql/}"
+SQL_BASE_URL="${SQL_DOWNLOAD_URL:-https://github.com/OpenInsightHQ/openinsight/releases/latest/download/sql/}"
 SQL_DOWNLOAD_DIR="${SCRIPT_DIR}/sql-updates"
 mkdir -p "${SQL_DOWNLOAD_DIR}"
 

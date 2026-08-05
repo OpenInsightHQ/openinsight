@@ -8,7 +8,7 @@ source "${PROJECT_ROOT}/common.sh"
 ensure_env
 
 SKILL_REPO_DIR="${SCRIPT_DIR}/skill-repo"
-SKILL_BASE_URL="${SKILLS_DOWNLOAD_URL:-https://github.com/OpenInsightBH/openinsight/releases/latest/download/skills}"
+SKILL_BASE_URL="${SKILLS_DOWNLOAD_URL:-https://github.com/OpenInsightHQ/openinsight/releases/latest/download/skills}"
 SKILL_LIST_URL="${SKILL_BASE_URL}/list.txt"
 
 print_separator() {

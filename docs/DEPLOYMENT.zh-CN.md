@@ -273,7 +273,7 @@ docker network create openinsight_default
 ### 4.2 克隆仓库
 
 ```bash
-git clone https://github.com/OpenInsightBH/openinsight.git
+git clone https://github.com/OpenInsightHQ/openinsight.git
 cd openinsight
 ```
 

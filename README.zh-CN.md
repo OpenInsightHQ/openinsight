@@ -35,7 +35,7 @@ OpenInsight 是一套企业级 AI 智能体平台，包含以下核心组件：
 ### 1. 克隆仓库
 
 ```bash
-git clone https://github.com/OpenInsightBH/openinsight.git
+git clone https://github.com/OpenInsightHQ/openinsight.git
 cd openinsight
 ```
 

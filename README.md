@@ -35,7 +35,7 @@ Infrastructure: MySQL, MongoDB, Redis, MinIO, Meilisearch, SearXNG, Code Interpr
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/OpenInsightBH/openinsight.git
+git clone https://github.com/OpenInsightHQ/openinsight.git
 cd openinsight
 ```
 
