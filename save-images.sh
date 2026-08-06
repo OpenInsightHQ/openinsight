@@ -20,7 +20,7 @@ IMAGES=(
   "${GHCR}/arp:latest"
   "${GHCR}/dmp-api:latest"
   "${GHCR}/dmp-nginx:latest"
-  "${GHCR}/pi-runtime:latest"
+  "${GHCR}/one-pi:latest"
   "${GHCR}/librecodeinterpreter-api:latest"
   "${GHCR}/mcp-searxng:latest"
   "${GHCR}/mcp-searxng-proxy:latest"
