@@ -638,7 +638,12 @@ DMP 启动成功后，需要激活 License：
 1. 打开浏览器访问 `http://<HOST_IP>:30080/dmp/`
 2. 使用默认账户登录：
    - 用户名：`chatbi`
-   - 密码：`Chatbi.123`
+   - 密码：`ADMIN_INIT_PASSWORD` 中配置的明文密码（默认 `Chatbi.123`）。
+     若将该配置项留空，系统会在首次启动时随机生成 16 位密码，并打印在 dmp-api 启动日志中（搜索关键字 `initial password`）：
+     ```bash
+     docker logs openinsight-dmp-api 2>&1 | grep 'initial password'
+     ```
+     获取后请尽快登录并修改密码。
 3. 首次登录需要上传 License 文件，`http://<HOST_IP>:30080/dmp/infra/certifcate`
 4. 上传 License 后系统完成激活
 
@@ -835,8 +840,12 @@ MINIO_BUCKET=code-interpreter-files
 
 | 平台 | 用户名 | 密码 |
 |-----|-------|------|
-| DMP 管理平台 | chatbi | Chatbi.123 |
-| ARP 智能问答平台 | chatbi@example.com | Chatbi.123 |
+| DMP 管理平台 | chatbi | `ADMIN_INIT_PASSWORD` 中配置的明文密码（默认 `Chatbi.123`） |
+| ARP 智能问答平台 | chatbi@example.com | 与 DMP 管理员密码一致 |
+
+> **说明**：管理员密码由 `dmp/.env` 中的 `ADMIN_INIT_PASSWORD`（明文）统一控制，同时作用于 DMP（MySQL）与 ARP（MongoDB）管理员账号。
+> 若将该配置项留空，系统会在首次启动时随机生成 16 位密码，并打印在 dmp-api 启动日志中（搜索关键字 `initial password`），获取后请尽快登录并修改密码。
+> 若系统中已存在的管理员账号密码为空，系统启动时也会自动随机重置并打印日志。
 
 ### 7.4 SSL 证书配置（可选）
 
@@ -914,7 +923,7 @@ docker logs -f openinsight-arp
 1. 打开浏览器访问 `http://<HOST_IP>:30080/dmp/`
 2. 使用默认账户登录：
    - 用户名：`chatbi`
-   - 密码：`Chatbi.123`
+   - 密码：`ADMIN_INIT_PASSWORD` 中配置的明文密码（默认 `Chatbi.123`）。若该配置项留空，初始密码为系统随机生成，可在 dmp-api 日志中查看：`docker logs openinsight-dmp-api 2>&1 | grep 'initial password'`
 3. 首次登录需要上传 License 文件
 4. 上传证书后重新登录
 
@@ -923,7 +932,7 @@ docker logs -f openinsight-arp
 1. 访问 `http://<HOST_IP>:33080/arp/`
 2. 使用默认账户登录：
    - 用户名：`chatbi@example.com`
-   - 密码：`Chatbi.123`
+   - 密码：与 DMP 管理员密码一致（由 `ADMIN_INIT_PASSWORD` 控制）
 3. 测试对话功能是否正常
 
 ### 9.3 服务健康检查

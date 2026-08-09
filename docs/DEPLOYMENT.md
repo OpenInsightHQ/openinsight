@@ -466,7 +466,12 @@ After DMP starts successfully, activate the License:
 1. Open `http://<HOST_IP>:30080/dmp/` in a browser
 2. Log in with the default account:
    - Username: `chatbi`
-   - Password: `Chatbi.123`
+   - Password: the plaintext password configured in `ADMIN_INIT_PASSWORD` (default `Chatbi.123`).
+     If that setting is left empty, the system randomly generates a 16-character password on first startup and prints it in the dmp-api startup log (search for the keyword `initial password`):
+     ```bash
+     docker logs openinsight-dmp-api 2>&1 | grep 'initial password'
+     ```
+     Retrieve it and change the password as soon as possible.
 3. On first login, upload a License file at `http://<HOST_IP>:30080/dmp/infra/certifcate`
 4. The system is activated after uploading the License
 
@@ -524,8 +529,12 @@ Default port mappings:
 
 | Platform | Username | Password |
 |----------|----------|----------|
-| DMP admin | chatbi | Chatbi.123 |
-| ARP | chatbi@example.com | Chatbi.123 |
+| DMP admin | chatbi | plaintext password configured in `ADMIN_INIT_PASSWORD` (default `Chatbi.123`) |
+| ARP | chatbi@example.com | same as the DMP admin password |
+
+> **Note**: The admin password is controlled centrally by `ADMIN_INIT_PASSWORD` (plaintext) in `dmp/.env`, and applies to both the DMP (MySQL) and ARP (MongoDB) admin accounts.
+> If left empty, the system randomly generates a 16-character password on first startup and prints it in the dmp-api startup log (search for the keyword `initial password`); retrieve it and change the password as soon as possible.
+> If an existing admin account has an empty password in the database, the system also resets it to a random one at startup and logs it.
 
 ### 7.4 SSL Certificate (optional)
 
@@ -601,7 +610,7 @@ docker logs -f openinsight-arp
 1. Open `http://<HOST_IP>:30080/dmp/` in a browser
 2. Log in with the default account:
    - Username: `chatbi`
-   - Password: `Chatbi.123`
+   - Password: the plaintext password configured in `ADMIN_INIT_PASSWORD` (default `Chatbi.123`). If left empty, the initial password is system-generated and can be found in the dmp-api log: `docker logs openinsight-dmp-api 2>&1 | grep 'initial password'`
 3. Upload a License file on first login
 4. Re-login after uploading the certificate
 
@@ -610,7 +619,7 @@ docker logs -f openinsight-arp
 1. Open `http://<HOST_IP>:33080/arp/`
 2. Log in with the default account:
    - Username: `chatbi@example.com`
-   - Password: `Chatbi.123`
+   - Password: same as the DMP admin password (controlled by `ADMIN_INIT_PASSWORD`)
 3. Test that the chat function works
 
 ### 9.3 Health check

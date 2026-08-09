@@ -68,4 +68,13 @@ print_separator
 echo "       DMP 安装完成!"
 print_separator
 echo "DMP 管理平台地址: http://${HOST_IP}:${DMP_PORT}/dmp/"
+
+# 管理员密码提示
+ADMIN_INIT_PASSWORD_VAL="$(grep '^ADMIN_INIT_PASSWORD=' .env | head -1 | cut -d'=' -f2-)"
+if [ -z "${ADMIN_INIT_PASSWORD_VAL}" ]; then
+    echo ""
+    echo "⚠ 未配置 ADMIN_INIT_PASSWORD，管理员初始密码已由系统随机生成。"
+    echo "  请通过以下命令查看 dmp-api 日志中的初始密码，并尽快登录修改："
+    echo "    docker logs openinsight-dmp-api 2>&1 | grep 'initial password'"
+fi
 echo ""
