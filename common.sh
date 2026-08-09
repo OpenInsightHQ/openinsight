@@ -67,6 +67,8 @@ ensure_env() {
         _fill_secret "${env_file}" MONGO_APP_PASSWORD     "$(gen_password)"
         _fill_secret "${env_file}" MONGO_READONLY_PASSWORD "$(gen_password)"
         _fill_secret "${env_file}" DMP_API_KEY            "$(gen_api_key ak)"
+        _fill_secret "${env_file}" MYBATIS_PLUS_ENCRYPTOR_PASSWORD "$(gen_password)"
+        _fill_secret "${env_file}" ARP_API_KEY            "sk-$(gen_hex 32)"
         _fill_secret "${env_file}" PI_API_KEY             "$(gen_password 32)"
         _fill_secret "${env_file}" LIBRECHAT_CODE_API_KEY "$(gen_hex)"
         _fill_secret "${env_file}" CODE_INTERPRETER_MASTER_API_KEY "$(gen_hex)"
