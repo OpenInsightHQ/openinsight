@@ -151,11 +151,15 @@ class CodeExecutionRunner:
             )
 
             # Mount files if provided
+            mounted_meta: Dict[str, Optional[int]] = {}
             if files:
-                await self._mount_files_to_container(container, files)
+                mounted_meta = await self._mount_files_to_container(container, files)
 
             # Execute the code
             start_time = datetime.utcnow()
+            # Epoch baseline after mounting: any mounted file whose mtime is
+            # newer than this was rewritten by the executed code
+            mount_done_epoch = (start_time - datetime(1970, 1, 1)).total_seconds()
 
             # Check if this is a REPL container (for optimization)
             is_repl = self._is_repl_container(container, request.language)
@@ -215,7 +219,14 @@ class CodeExecutionRunner:
                 or files
                 or any(
                     kw in request.code
-                    for kw in ["open(", "savefig", "to_csv", "write(", ".save("]
+                    for kw in [
+                        "open(",
+                        "savefig",
+                        "to_csv",
+                        "to_excel",
+                        "write(",
+                        ".save(",
+                    ]
                 )
             )
 
@@ -223,9 +234,8 @@ class CodeExecutionRunner:
             if should_detect_files:
                 generated_files = await self._detect_generated_files(container)
 
-            mounted_filenames = self._get_mounted_filenames(files)
             filtered_files = self._filter_generated_files(
-                generated_files, mounted_filenames
+                generated_files, mounted_meta, mount_done_epoch
             )
 
             for file_info in filtered_files:
@@ -328,29 +338,38 @@ class CodeExecutionRunner:
 
         return outputs
 
-    def _get_mounted_filenames(self, files: Optional[List[Dict[str, Any]]]) -> set:
-        """Get set of mounted filenames for filtering."""
-        mounted = set()
-        if files:
-            try:
-                for f in files:
-                    name = f.get("filename") or f.get("name")
-                    if name:
-                        mounted.add(name)
-                        mounted.add(OutputProcessor.normalize_filename(name))
-            except Exception:
-                pass
-        return mounted
-
     def _filter_generated_files(
-        self, generated: List[Dict[str, Any]], mounted_filenames: set
+        self,
+        generated: List[Dict[str, Any]],
+        mounted_meta: Dict[str, Optional[int]],
+        mount_done_epoch: Optional[float] = None,
     ) -> List[Dict[str, Any]]:
-        """Filter out mounted files from generated files list."""
-        return [
-            f
-            for f in generated
-            if Path(f.get("path", "")).name not in mounted_filenames
-        ]
+        """Filter detected files, keeping new files and modified mounted files.
+
+        Mounted files are excluded only while they are byte-identical to what
+        was mounted; an in-place modification (e.g. rewriting an uploaded
+        workbook) must be emitted as an output so consumers receive the
+        updated content.
+        """
+        kept: List[Dict[str, Any]] = []
+        for f in generated:
+            name = Path(f.get("path", "")).name
+            normalized = OutputProcessor.normalize_filename(name)
+            if name not in mounted_meta and normalized not in mounted_meta:
+                kept.append(f)
+                continue
+
+            original_size = mounted_meta.get(name, mounted_meta.get(normalized))
+            size_changed = original_size is not None and f.get("size") != original_size
+            mtime = f.get("mtime") or 0
+            mtime_changed = (
+                mtime > 0
+                and mount_done_epoch is not None
+                and mtime > mount_done_epoch
+            )
+            if size_changed or mtime_changed:
+                kept.append(f)
+        return kept
 
     def _record_metrics(
         self,
@@ -555,8 +574,15 @@ class CodeExecutionRunner:
 
     async def _mount_files_to_container(
         self, container: Container, files: List[Dict[str, Any]]
-    ) -> None:
-        """Mount files to container workspace."""
+    ) -> Dict[str, Optional[int]]:
+        """Mount files to container workspace.
+
+        Returns:
+            Map of mounted filename variants (raw and normalized) to the byte
+            size written into the container, or None when only a placeholder
+            could be created.
+        """
+        mounted_meta: Dict[str, Optional[int]] = {}
         try:
             from ..file import FileService
 
@@ -566,6 +592,10 @@ class CodeExecutionRunner:
                 filename = file_info.get("filename", "unknown")
                 file_id = file_info.get("file_id")
                 session_id = file_info.get("session_id")
+
+                def _record(size: Optional[int]) -> None:
+                    mounted_meta[filename] = size
+                    mounted_meta[OutputProcessor.normalize_filename(filename)] = size
 
                 if not file_id or not session_id:
                     logger.warning(f"Missing file_id or session_id for file {filename}")
@@ -586,6 +616,7 @@ class CodeExecutionRunner:
                         if await self.container_manager.copy_content_to_container(
                             container, file_content, dest_path
                         ):
+                            _record(len(file_content))
                             logger.info(
                                 "Mounted file",
                                 filename=filename,
@@ -594,18 +625,22 @@ class CodeExecutionRunner:
                         else:
                             logger.warning("Failed to mount file", filename=filename)
                             await self._create_placeholder_file(container, filename)
+                            _record(None)
                     else:
                         logger.warning(
                             f"Could not retrieve content for file {filename}"
                         )
                         await self._create_placeholder_file(container, filename)
+                        _record(None)
 
                 except Exception as file_error:
                     logger.error(f"Error retrieving file {filename}: {file_error}")
                     await self._create_placeholder_file(container, filename)
+                    _record(None)
 
         except Exception as e:
             logger.error(f"Failed to mount files to container: {e}")
+        return mounted_meta
 
     async def _create_placeholder_file(
         self, container: Container, filename: str
@@ -626,44 +661,89 @@ EOF"""
     async def _detect_generated_files(
         self, container: Container
     ) -> List[Dict[str, Any]]:
-        """Detect files generated during execution."""
+        """Detect files in the container workspace with size and mtime."""
         try:
+            # GNU find: emit size, mtime epoch and path tab-separated
             exit_code, stdout, stderr = await self.container_manager.execute_command(
                 container,
-                "find /mnt/data -type f -name '*' ! -name 'code.*' ! -name 'Code.*' -exec ls -la {} \\;",
+                "find /mnt/data -type f ! -name 'code.*' ! -name 'Code.*' "
+                "-printf '%s\\t%T@\\t%p\\n'",
                 timeout=5,
             )
+            if exit_code == 0 and stdout.strip():
+                return self._parse_find_output(stdout)
 
+            # Fallback for images without GNU find (no mtime available)
+            exit_code, stdout, stderr = await self.container_manager.execute_command(
+                container,
+                "find /mnt/data -type f -name '*' ! -name 'code.*' ! -name 'Code.*' "
+                "-exec ls -la {} \\;",
+                timeout=5,
+            )
             if exit_code != 0 or not stdout.strip():
                 return []
 
-            generated_files = []
-            for line in stdout.strip().split("\n"):
-                if line.strip():
-                    parts = line.split()
-                    if len(parts) >= 9:
-                        size = int(parts[4]) if parts[4].isdigit() else 0
-                        filename = " ".join(parts[8:])
-
-                        if size > settings.max_file_size_mb * 1024 * 1024:
-                            continue
-
-                        generated_files.append(
-                            {
-                                "path": filename,
-                                "size": size,
-                                "mime_type": OutputProcessor.guess_mime_type(filename),
-                            }
-                        )
-
-                        if len(generated_files) >= settings.max_output_files:
-                            break
-
-            return generated_files
+            return self._parse_ls_output(stdout)
 
         except Exception as e:
             logger.error(f"Failed to detect generated files: {e}")
             return []
+
+    @staticmethod
+    def _parse_find_output(stdout: str) -> List[Dict[str, Any]]:
+        """Parse `find -printf '%s\\t%T@\\t%p\\n'` output."""
+        detected: List[Dict[str, Any]] = []
+        for line in stdout.strip().split("\n"):
+            if not line.strip():
+                continue
+            parts = line.split("\t", 2)
+            if len(parts) < 3:
+                continue
+            size_str, mtime_str, path = parts
+            try:
+                size = int(size_str)
+                mtime = float(mtime_str)
+            except ValueError:
+                continue
+            if size > settings.max_file_size_mb * 1024 * 1024:
+                continue
+            detected.append(
+                {
+                    "path": path,
+                    "size": size,
+                    "mtime": mtime,
+                    "mime_type": OutputProcessor.guess_mime_type(path),
+                }
+            )
+            if len(detected) >= settings.max_output_files:
+                break
+        return detected
+
+    @staticmethod
+    def _parse_ls_output(stdout: str) -> List[Dict[str, Any]]:
+        """Parse `ls -la` output; mtime is unavailable in this form."""
+        detected: List[Dict[str, Any]] = []
+        for line in stdout.strip().split("\n"):
+            if line.strip():
+                parts = line.split()
+                if len(parts) >= 9:
+                    size = int(parts[4]) if parts[4].isdigit() else 0
+                    filename = " ".join(parts[8:])
+
+                    if size > settings.max_file_size_mb * 1024 * 1024:
+                        continue
+
+                    detected.append(
+                        {
+                            "path": filename,
+                            "size": size,
+                            "mime_type": OutputProcessor.guess_mime_type(filename),
+                        }
+                    )
+
+                    if len(detected) >= settings.max_output_files:
+                        break
+        return detected
 
     def get_container_by_session(self, session_id: str) -> Optional[Container]:
         """Get container for a session.
