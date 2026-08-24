@@ -2,29 +2,46 @@
 
 > 🌐 Languages: **English** | [简体中文](README.zh-CN.md)
 
-Enterprise AI agent platform — unified config + modular install + one-click deployment.
+Enterprise AI agent platform — unified configuration, modular installation, and one-click deployment.
 
 📘 **[Deployment Guide →](docs/DEPLOYMENT.md)**
 
 ## Overview
 
-OpenInsight is an enterprise-grade AI agent platform with these core components:
+OpenInsight is an enterprise-grade AI agent platform with the following core components:
 
-| Component | Description |
-|-----------|-------------|
-| **DMP** (Data Management Platform) | Backend + admin UI; manages model config, users, permissions |
-| **ARP** (Agent Response Platform) | Conversational AI agent platform; multi-model, Artifacts, code execution |
-| **PI Agent** | PI agent service; code execution, file processing, skill extensibility |
+| Component                          | Description                                                                                                  |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| **DMP** (Data Management Platform) | Backend and administration platform for model configuration, users, permissions, and data management         |
+| **ARP** (Agent Runtime Platform)   | Conversational AI agent platform with multi-model support, Artifacts, code execution, and agent capabilities |
+| **PI Agent**                       | PI agent service for code execution, file processing, and skill extensibility                                |
 
 Infrastructure: MySQL, MongoDB, Redis, MinIO, Meilisearch, SearXNG, Code Interpreter API.
+
+## Community & Enterprise Edition
+
+OpenInsight follows an **Open Core** licensing model and is available in two editions:
+
+|                         | Community Edition | Enterprise Edition |
+| ----------------------- | ----------------- | ------------------ |
+| **Core Platform**       | ✓                 | ✓                  |
+| **Deployment**          | Self-hosted       | Self-hosted        |
+| **Enterprise Features** | —                 | ✓                  |
+| **License Key**         | Not required      | Required           |
+
+**Community Edition** is free to use and can be deployed without a commercial license key.
+
+**Enterprise Edition** includes additional enterprise and commercial capabilities and requires a valid License Key issued by OpenInsight.
+
+For more information, see [`LICENSE-COMMERCIAL.md`](./LICENSE-COMMERCIAL.md).
 
 ## System Requirements
 
 | Item | Minimum | Recommended |
-|------|---------|-------------|
-| CPU | 4 cores | 16 cores |
-| RAM | 16 GB | 32 GB |
-| Disk | 100 GB | 500 GB |
+| ---- | ------- | ----------- |
+| CPU  | 4 cores | 16 cores    |
+| RAM  | 16 GB   | 32 GB       |
+| Disk | 100 GB  | 500 GB      |
 
 **Prerequisites:** Docker 24.07+, Docker Compose v2.26.1+
 
@@ -45,7 +62,7 @@ cd openinsight
 bash init-env.sh
 ```
 
-This generates `env.sh` from `env.sh.example` and auto-fills all passwords/keys with random values.
+This generates `env.sh` from `env.sh.example` and automatically fills passwords and keys with random values.
 
 ### 3. Set the server IP
 
@@ -65,7 +82,7 @@ HOST_IP=192.168.1.100    # Your server IP
 bash prepare.sh
 ```
 
-> Offline: run `bash save-images.sh` on a networked machine, copy `docker-images.tar.gz` to the target server, then run `bash load-images.sh`.
+> Offline: run `bash save-images.sh` on a networked machine, copy `docker-images.tar.gz` to the target server, then run `bash load-images.sh` on the target server.
 
 ### 5. One-click install
 
@@ -75,34 +92,42 @@ bash install_all.sh
 
 ### 6. Post-install steps
 
-1. **Activate License**: open `http://<HOST_IP>:30080/dmp/`, log in (`chatbi` / `Chatbi.123`), upload the License file.
-2. **Access ARP**: once DMP is activated, ARP starts automatically. Open `http://<HOST_IP>:33080/arp/`.
+**Community Edition**
+
+No commercial license key is required. Once installation is complete, you can access the platform directly.
+
+* **DMP:** `http://<HOST_IP>:30080/dmp/`
+* **ARP:** `http://<HOST_IP>:33080/arp/`
+
+**Enterprise Edition**
+
+Enterprise features require a valid License Key. After installation, open the DMP management interface and activate the Enterprise License.
 
 📖 For full details, see the **[Deployment Guide](docs/DEPLOYMENT.md)**.
 
 ## Configuration
 
-All config lives in `env.sh` (generated from `env.sh.example` by `init-env.sh`).
+All configuration is stored in `env.sh`, generated from `env.sh.example` by `init-env.sh`.
 
-- **Secrets/Passwords**: auto-generated randomly on first run — no manual input
-- **HOST_IP**: the only setting you must change
-- **External middleware**: set `USE_EXTERNAL_MYSQL/REDIS/MINIO=true` to use external services
-- **PI Agent LLM**: configure `OPENCODE_API_KEY` and `PI_MODEL` after deployment
+* **Secrets/Passwords**: automatically generated randomly on first run
+* **HOST_IP**: the only setting you must change
+* **External middleware**: set `USE_EXTERNAL_MYSQL/REDIS/MINIO=true` to use external services
+* **PI Agent LLM**: configure `OPENCODE_API_KEY` and `PI_MODEL` after deployment
 
 ## Directory Structure
 
-```
+```text
 openinsight/
-├── init-env.sh              # Environment init (generates env.sh + random secrets)
-├── install_all.sh           # One-click install
+├── init-env.sh              # Environment initialization
+├── install_all.sh           # One-click installation
 ├── uninstall_all.sh         # One-click uninstall
 ├── prepare.sh               # Pull Docker images
-├── save-images.sh           # Export images (offline)
-├── load-images.sh           # Import images (offline)
-├── env.sh.example           # Config template (committed to Git)
+├── save-images.sh           # Export images for offline deployment
+├── load-images.sh           # Import images for offline deployment
+├── env.sh.example           # Configuration template
 ├── common.sh                # Shared function library
 ├── docs/                    # Documentation
-├── mysql/                   # MySQL + init SQL
+├── mysql/                   # MySQL + initialization SQL
 ├── mongodb/                 # MongoDB
 ├── redis/                   # Redis
 ├── minio/                   # MinIO object storage
@@ -112,7 +137,7 @@ openinsight/
 ├── pi-agent/                # PI Agent
 ├── dmp/                     # DMP data management platform
 ├── arp/                     # ARP agent platform
-└── mongo-express/           # Mongo Express admin UI
+└── mongo-express/           # Mongo Express administration UI
 ```
 
 ## Service Management
@@ -132,12 +157,17 @@ bash uninstall_all.sh
 
 ## Default Ports
 
-| Service | Port |
-|---------|------|
-| DMP | 30080 |
-| ARP | 33080 |
-| Code Interpreter API | 8000 |
+| Service              | Port  |
+| -------------------- | ----- |
+| DMP                  | 30080 |
+| ARP                  | 33080 |
+| Code Interpreter API | 8000  |
 
 ## License
 
-[Apache License 2.0](LICENSE)
+OpenInsight uses an **Open Core** licensing model.
+
+* Open-source components and materials covered by applicable open-source licenses are provided under their respective licenses, including the **Apache License 2.0**.
+* Enterprise features and other proprietary commercial capabilities require a valid commercial **License Key**.
+
+See [`LICENSE`](./LICENSE) for the Apache License 2.0 and [`LICENSE-COMMERCIAL.md`](./LICENSE-COMMERCIAL.md) for commercial licensing information.
