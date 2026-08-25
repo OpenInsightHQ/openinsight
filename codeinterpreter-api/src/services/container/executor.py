@@ -96,6 +96,7 @@ class ContainerExecutor:
                     break
 
             output = b"".join(output_chunks)
+            output = self._demux_exec_stream(output)
             exec_info = self.client.api.exec_inspect(exec_id)
             exit_code = exec_info["ExitCode"]
 
@@ -177,11 +178,44 @@ class ContainerExecutor:
                 break
 
         output = b"".join(output_chunks)
+        output = self._demux_exec_stream(output)
         exec_info = self.client.api.exec_inspect(exec_id)
         exit_code = exec_info["ExitCode"]
         output_str = self._sanitize_output(output) if output else ""
         stdout, stderr = self._separate_output_streams(output_str, exit_code)
         return exit_code, stdout, stderr
+
+    @staticmethod
+    def _demux_exec_stream(data: bytes) -> bytes:
+        """Extract payloads from docker multiplexed exec stream frames.
+
+        Non-tty exec output is framed as 8-byte headers
+        ([stream_type, 0, 0, 0, size_be32] + payload). Reading the raw
+        socket returns frames verbatim; downstream control-char sanitizing
+        strips most header bytes but leaks the size byte as junk (e.g. a
+        stray '^') that corrupts strict output parsing. Validate the
+        framing and join payloads; fall back to the raw bytes when the
+        buffer is not framed (tty mode).
+        """
+        if not data or len(data) < 8:
+            return data
+        out = bytearray()
+        pos = 0
+        while pos < len(data):
+            if pos + 8 > len(data):
+                return data
+            stream_type = data[pos]
+            if stream_type not in (0, 1, 2) or data[pos + 1 : pos + 4] != b"\x00\x00\x00":
+                return data
+            size = int.from_bytes(data[pos + 4 : pos + 8], "big")
+            payload_end = pos + 8 + size
+            if payload_end > len(data):
+                # truncated tail (socket timeout mid-frame): keep what we have
+                out.extend(data[pos + 8 :])
+                return bytes(out)
+            out.extend(data[pos + 8 : payload_end])
+            pos = payload_end
+        return bytes(out)
 
     def _build_sanitized_env(self, language: Optional[str]) -> Dict[str, str]:
         """Build environment whitelist for execution."""

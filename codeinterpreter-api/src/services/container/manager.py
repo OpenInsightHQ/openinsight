@@ -413,7 +413,10 @@ class ContainerManager:
             with tarfile.open(fileobj=tar_buffer, mode="w") as tar:
                 tarinfo = tarfile.TarInfo(name=dest_path.split("/")[-1])
                 tarinfo.size = len(content)
-                tarinfo.mode = 0o644
+                # put_archive extracts as root while the REPL server runs as
+                # an unprivileged user; 0666 lets executed code rewrite the
+                # mounted file in place
+                tarinfo.mode = 0o666
                 tar.addfile(tarinfo, io.BytesIO(content))
 
             tar_buffer.seek(0)
