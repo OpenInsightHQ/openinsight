@@ -22,6 +22,28 @@ services:
       - ./data/arp/logs:/app/logs
       - ./data/arp/data:/app/data
 
+  gallery-scheduler:
+    image: ghcr.io/openinsighthq/arp:latest
+    container_name: openinsight-arp-gallery-scheduler
+    command: ["node", "api/schedulers/galleryScheduler.js"]
+    restart: always
+    user: root
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - HOST=0.0.0.0
+      - MONGO_URI=mongodb://openinsight-mongodb:27017/LibreChat
+      - MEILI_HOST=http://openinsight-meilisearch:7700
+    env_file:
+      - .env
+    networks:
+      - openinsight_default
+    volumes:
+      - ./data/arp/images:/app/client/public/images
+      - ./data/arp/uploads:/app/uploads
+      - ./data/arp/logs:/app/logs
+      - ./data/arp/data:/app/data
+
 networks:
   openinsight_default:
     external: true
