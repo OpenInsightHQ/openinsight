@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1350" viewBox="0 0 2400 1350" role="img" aria-labelledby="title desc">
+  <title id="title">ONE-PI Agent Architecture</title>
+  <desc id="desc">ONE-PI connects to an extensible set of expert agents, each equipped with Prompt, MCP, API, and Skill capabilities.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071426"/>
+      <stop offset="0.52" stop-color="#0B1D35"/>
+      <stop offset="1" stop-color="#101C36"/>
+    </linearGradient>
+    <linearGradient id="hero" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3068FF"/>
+      <stop offset="0.55" stop-color="#6255F5"/>
+      <stop offset="1" stop-color="#7B4DE2"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#132B4A"/>
+      <stop offset="1" stop-color="#182344"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-30%" width="140%" height="170%">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#030A16" flood-opacity="0.45"/>
+    </filter>
+    <filter id="glow" x="-30%" y="-50%" width="160%" height="200%">
+      <feGaussianBlur stdDeviation="22" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <style>
+      text { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+      .connector { fill: none; stroke: #6686B5; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+      .branch { fill: none; stroke: #53719E; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+      .expert-title { fill: #F6F9FF; font-size: 36px; font-weight: 700; text-anchor: middle; }
+      .prompt { fill: #AFC0D9; font-size: 25px; font-weight: 600; letter-spacing: 1px; text-anchor: middle; }
+      .capability { fill: #F8FBFF; font-size: 24px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; }
+    </style>
+  </defs>
+
+  <rect width="2400" height="1350" fill="url(#bg)"/>
+  <circle cx="260" cy="100" r="360" fill="#1D5DFF" opacity="0.08"/>
+  <circle cx="2180" cy="1260" r="430" fill="#7D4BE6" opacity="0.08"/>
+  <path d="M0 1160 C520 1040 760 1310 1260 1160 S2020 1030 2400 1160" fill="none" stroke="#7A62F4" stroke-opacity="0.07" stroke-width="120"/>
+
+  <!-- ONE-PI framework -->
+  <rect x="470" y="115" width="1460" height="180" rx="46" fill="url(#hero)" filter="url(#shadow)"/>
+  <rect x="472" y="117" width="1456" height="176" rx="44" fill="none" stroke="#A7B8FF" stroke-opacity="0.38" stroke-width="2"/>
+  <text x="1200" y="220" fill="#FFFFFF" font-size="48" font-weight="750" text-anchor="middle">
+    ONE-PI <tspan font-size="38" font-weight="560">(Understand → Reason → Discover → Compose → Execute)</tspan>
+  </text>
+
+  <!-- Main expert connector -->
+  <path class="connector" d="M1200 295 V385 M330 385 H2070 M330 385 V465 M870 385 V465 M1410 385 V465 M2070 385 V465"/>
+  <circle cx="1200" cy="385" r="8" fill="#8FAAFF" filter="url(#glow)"/>
+  <path d="M320 452 L330 470 L340 452" fill="#88A5D0"/>
+  <path d="M860 452 L870 470 L880 452" fill="#88A5D0"/>
+  <path d="M1400 452 L1410 470 L1420 452" fill="#88A5D0"/>
+  <path d="M2060 452 L2070 470 L2080 452" fill="#88A5D0"/>
+
+  <!-- Expert cards -->
+  <g filter="url(#shadow)">
+    <rect x="110" y="475" width="440" height="250" rx="34" fill="url(#card)" stroke="#386BAA" stroke-width="2"/>
+    <rect x="650" y="475" width="440" height="250" rx="34" fill="url(#card)" stroke="#675BC5" stroke-width="2"/>
+    <rect x="1190" y="475" width="440" height="250" rx="34" fill="url(#card)" stroke="#327F9F" stroke-width="2"/>
+    <rect x="1850" y="475" width="440" height="250" rx="34" fill="url(#card)" stroke="#7484A4" stroke-width="2" stroke-dasharray="13 10"/>
+  </g>
+
+  <text class="expert-title" x="330" y="565"><tspan x="330">Sales Analytics</tspan><tspan x="330" dy="46">Expert</tspan></text>
+  <text class="expert-title" x="870" y="565"><tspan x="870">Financial Analytics</tspan><tspan x="870" dy="46">Expert</tspan></text>
+  <text class="expert-title" x="1410" y="565"><tspan x="1410">Customer Churn</tspan><tspan x="1410" dy="46">Expert</tspan></text>
+  <text class="expert-title" x="2070" y="592">Expert N</text>
+
+  <line x1="180" y1="649" x2="480" y2="649" stroke="#7692B7" stroke-opacity="0.38" stroke-width="2"/>
+  <line x1="720" y1="649" x2="1020" y2="649" stroke="#8C83CA" stroke-opacity="0.38" stroke-width="2"/>
+  <line x1="1260" y1="649" x2="1560" y2="649" stroke="#6D9CAC" stroke-opacity="0.38" stroke-width="2"/>
+  <line x1="1920" y1="649" x2="2220" y2="649" stroke="#8A96AE" stroke-opacity="0.38" stroke-width="2"/>
+  <text class="prompt" x="330" y="691">PROMPT</text>
+  <text class="prompt" x="870" y="691">PROMPT</text>
+  <text class="prompt" x="1410" y="691">PROMPT</text>
+  <text class="prompt" x="2070" y="691">PROMPT</text>
+
+  <!-- Extensibility ellipsis -->
+  <g fill="#92A8C7">
+    <circle cx="1710" cy="590" r="9"/><circle cx="1750" cy="590" r="9"/><circle cx="1790" cy="590" r="9"/>
+  </g>
+
+  <!-- Capability branches -->
+  <path class="branch" d="M330 725 V825 M170 825 H490 M170 825 V895 M330 825 V895 M490 825 V895"/>
+  <path class="branch" d="M870 725 V825 M710 825 H1030 M710 825 V895 M870 825 V895 M1030 825 V895"/>
+  <path class="branch" d="M1410 725 V825 M1250 825 H1570 M1250 825 V895 M1410 825 V895 M1570 825 V895"/>
+  <path class="branch" d="M2070 725 V825 M1910 825 H2230 M1910 825 V895 M2070 825 V895 M2230 825 V895"/>
+
+  <!-- Capability modules -->
+  <g filter="url(#shadow)">
+    <rect x="105" y="895" width="130" height="92" rx="24" fill="#1E5FD0"/><rect x="265" y="895" width="130" height="92" rx="24" fill="#654BC7"/><rect x="425" y="895" width="130" height="92" rx="24" fill="#087E86"/>
+    <rect x="645" y="895" width="130" height="92" rx="24" fill="#1E5FD0"/><rect x="805" y="895" width="130" height="92" rx="24" fill="#654BC7"/><rect x="965" y="895" width="130" height="92" rx="24" fill="#087E86"/>
+    <rect x="1185" y="895" width="130" height="92" rx="24" fill="#1E5FD0"/><rect x="1345" y="895" width="130" height="92" rx="24" fill="#654BC7"/><rect x="1505" y="895" width="130" height="92" rx="24" fill="#087E86"/>
+    <rect x="1845" y="895" width="130" height="92" rx="24" fill="#1E5FD0"/><rect x="2005" y="895" width="130" height="92" rx="24" fill="#654BC7"/><rect x="2165" y="895" width="130" height="92" rx="24" fill="#087E86"/>
+  </g>
+  <text class="capability" x="170" y="942">MCP</text><text class="capability" x="330" y="942">API</text><text class="capability" x="490" y="942">SKILL</text>
+  <text class="capability" x="710" y="942">MCP</text><text class="capability" x="870" y="942">API</text><text class="capability" x="1030" y="942">SKILL</text>
+  <text class="capability" x="1250" y="942">MCP</text><text class="capability" x="1410" y="942">API</text><text class="capability" x="1570" y="942">SKILL</text>
+  <text class="capability" x="1910" y="942">MCP</text><text class="capability" x="2070" y="942">API</text><text class="capability" x="2230" y="942">SKILL</text>
+
+  <!-- Caption -->
+  <text x="1200" y="1145" fill="#AFC0D9" font-size="30" font-weight="500" text-anchor="middle" letter-spacing="0.7">Extensible expert agents powered by composable enterprise capabilities</text>
+  <rect x="1070" y="1195" width="260" height="4" rx="2" fill="url(#hero)" opacity="0.8"/>
+</svg>

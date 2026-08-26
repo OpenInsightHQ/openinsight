@@ -1,10 +1,86 @@
-# OpenInsight
+# Open Insight
 
 > 🌐 Languages: **English** | [简体中文](README.zh-CN.md)
 
-Enterprise AI agent platform — unified configuration, modular installation, and one-click deployment.
+**Enterprise Agent Operating System — AI employees that learn your business and deliver outcomes, not conversations.**
 
-📘 **[Deployment Guide →](docs/DEPLOYMENT.md)**
+| Component | Role | License |
+|---|---|---|
+| **[ARP](https://github.com/OpenInsightHQ/arp)** | The runtime where AI employees work — any model, any tool, any skill | Apache-2.0 |
+| **[ONE-PI](https://github.com/OpenInsightHQ/one-pi)** | The reasoning engine — virtual experts that understand, reason, and execute | Apache-2.0 |
+| **DMP** | The enterprise core — four learning engines that teach AI your data, systems, and knowledge | Commercial |
+
+Employees work in the browser, zero install. Deploy on your own infrastructure.
+
+📘 **[Deployment Guide →](docs/DEPLOYMENT.md)** · Full story: **[Organization Home](https://github.com/OpenInsightHQ)**
+
+---
+
+## Architecture
+
+> **Enterprise AI starts with understanding the enterprise.**
+
+<p align="center">
+  <img src="docs/assets/architecture-diagram.png" alt="Open Insight Architecture" width="720">
+</p>
+
+### ONE-PI Agent Architecture
+
+ONE-PI connects to an extensible set of expert agents, each equipped with Prompt, MCP, API, and Skill capabilities.
+
+<p align="center">
+  <img src="docs/assets/one-pi-agent-architecture.svg" alt="ONE-PI Agent Architecture" width="720">
+</p>
+
+## Product Experience
+
+### Agent Runtime Platform
+
+<p align="center">
+  <img src="docs/assets/01-arp-main.png" alt="Agent Runtime Platform" width="820">
+</p>
+
+<p align="center">
+  <img src="docs/assets/02-arp-agent.png" alt="Agent Runtime Platform" width="820">
+</p>
+
+### Enterprise Data & AI Management
+
+<p align="center">
+  <img src="docs/assets/03-dmp.png" alt="Enterprise Data and AI Management" width="820">
+</p>
+
+## Why Open Insight?
+
+Most Data Agent systems are designed to answer questions.
+
+**Open Insight is designed to achieve business goals.**
+
+Enterprises don't measure conversations.
+
+**They measure outcomes.**
+
+## Built for Enterprise, Not Personal AI
+
+Most AI Agents are designed for individual users. Each user installs, configures and manages their own AI environment.
+
+Open Insight takes a different approach. **The enterprise learns once. Everyone benefits.**
+
+Open Insight continuously learns from the enterprise — its data, systems, business knowledge, workflows, skills, and expertise. This knowledge is centrally managed, governed, and made available to employees across the organization.
+
+It runs on enterprise infrastructure, not personal laptops. No installation, no setup, no maintenance burden on employees. It works **24/7** — monitoring systems, processing tasks, and collaborating with other AI agents across departments.
+
+## Roadmap
+
+| Component | Shipped | Next |
+|---|---|---|
+| **ARP** — where AI employees run | Multi-provider chat · agents & MCP · shared skills · self-hosted deploy | Deeper ONE-PI integration · community agent & MCP templates · local browser extension |
+| **ONE-PI** — how AI employees think | Virtual experts · shared skill repository · OpenAI-compatible agent API | **A2A collaboration** · more experts |
+| **DMP** — what enterprises get | Four learning engines · governed enterprise core *(commercial)* | Deeper enterprise knowledge base · more enterprise connectors · deeper governance |
+
+**A2A, redefined.** Multi-agent systems let one framework orchestrate many agents. A2A in Open Insight is different: every person commands their own AI, and the collaboration that used to happen person-to-person now happens agent-to-agent — with humans approving what matters.
+
+---
 
 ## Overview
 
@@ -14,7 +90,7 @@ OpenInsight is an enterprise-grade AI agent platform with the following core com
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | **DMP** (Data Management Platform) | Backend and administration platform for model configuration, users, permissions, and data management         |
 | **ARP** (Agent Runtime Platform)   | Conversational AI agent platform with multi-model support, Artifacts, code execution, and agent capabilities |
-| **PI Agent**                       | PI agent service for code execution, file processing, and skill extensibility                                |
+| **ONE-PI** (PI Agent)              | Reasoning engine for code execution, file processing, and skill extensibility                                |
 
 Infrastructure: MySQL, MongoDB, Redis, MinIO, Meilisearch, SearXNG, Code Interpreter API.
 
@@ -27,11 +103,11 @@ OpenInsight follows an **Open Core** licensing model and is available in two edi
 | **Core Platform**       | ✓                 | ✓                  |
 | **Deployment**          | Self-hosted       | Self-hosted        |
 | **Enterprise Features** | —                 | ✓                  |
-| **License Key**         | Not required      | Required           |
+| **License**             | Not required      | Required           |
 
-**Community Edition** is free to use and can be deployed without a commercial license key.
+**Community Edition** is free to use and can be deployed without a commercial license.
 
-**Enterprise Edition** includes additional enterprise and commercial capabilities and requires a valid License Key issued by OpenInsight.
+**Enterprise Edition** includes additional enterprise and commercial capabilities and requires a valid License File issued by OpenInsight.
 
 For more information, see [`LICENSE-COMMERCIAL.md`](./LICENSE-COMMERCIAL.md).
 
@@ -94,14 +170,14 @@ bash install_all.sh
 
 **Community Edition**
 
-No commercial license key is required. Once installation is complete, you can access the platform directly.
+No commercial license is required. Once installation is complete, you can access the platform directly.
 
 * **DMP:** `http://<HOST_IP>:30080/dmp/`
 * **ARP:** `http://<HOST_IP>:33080/arp/`
 
 **Enterprise Edition**
 
-Enterprise features require a valid License Key. After installation, open the DMP management interface and activate the Enterprise License.
+Enterprise features require a valid License File. After installation, open the DMP management interface and activate the Enterprise License.
 
 📖 For full details, see the **[Deployment Guide](docs/DEPLOYMENT.md)**.
 
@@ -134,7 +210,7 @@ openinsight/
 ├── meilisearch/             # Meilisearch full-text search
 ├── searxng/                 # SearXNG + MCP
 ├── codeinterpreter-api/     # Code Interpreter API
-├── pi-agent/                # PI Agent
+├── pi-agent/                # ONE-PI agent service
 ├── dmp/                     # DMP data management platform
 ├── arp/                     # ARP agent platform
 └── mongo-express/           # Mongo Express administration UI
@@ -168,6 +244,6 @@ bash uninstall_all.sh
 OpenInsight uses an **Open Core** licensing model.
 
 * Open-source components and materials covered by applicable open-source licenses are provided under their respective licenses, including the **Apache License 2.0**.
-* Enterprise features and other proprietary commercial capabilities require a valid commercial **License Key**.
+* Enterprise features and other proprietary commercial capabilities require a valid commercial **License File**.
 
 See [`LICENSE`](./LICENSE) for the Apache License 2.0 and [`LICENSE-COMMERCIAL.md`](./LICENSE-COMMERCIAL.md) for commercial licensing information.
