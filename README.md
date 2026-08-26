@@ -2,7 +2,11 @@
 
 > 🌐 Languages: **English** | [简体中文](README.zh-CN.md)
 
-**Enterprise Agent Operating System — AI employees that learn your business and deliver outcomes, not conversations.**
+### Build the next generation of AI employees for your enterprise.
+
+> **A team of AI employees designed to understand your business, perform specialized work, and deliver real business outcomes.**
+
+It enables AI to understand enterprise systems, enterprise data, enterprise knowledge and personal memory, then execute real business tasks through reusable **Enterprise Skills**.
 
 | Component | Role | License |
 |---|---|---|
@@ -82,17 +86,6 @@ It runs on enterprise infrastructure, not personal laptops. No installation, no 
 
 ---
 
-## Overview
-
-OpenInsight is an enterprise-grade AI agent platform with the following core components:
-
-| Component                          | Description                                                                                                  |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| **DMP** (Data Management Platform) | Backend and administration platform for model configuration, users, permissions, and data management         |
-| **ARP** (Agent Runtime Platform)   | Conversational AI agent platform with multi-model support, Artifacts, code execution, and agent capabilities |
-| **ONE-PI** (PI Agent)              | Reasoning engine for code execution, file processing, and skill extensibility                                |
-
-Infrastructure: MySQL, MongoDB, Redis, MinIO, Meilisearch, SearXNG, Code Interpreter API.
 
 ## Community & Enterprise Edition
 
