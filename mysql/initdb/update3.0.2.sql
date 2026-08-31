@@ -4,6 +4,7 @@ alter table dm_datasource add column signature varchar(128);
 alter table dm_dataset add column signature varchar(128);
 alter table infra_license add column machine_id varchar(64);
 
+delete from infra_file_config;
 
 CREATE TABLE `sl_system` (
                              `id` bigint NOT NULL AUTO_INCREMENT COMMENT '系统ID',

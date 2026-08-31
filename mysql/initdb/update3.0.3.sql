@@ -1,0 +1,1 @@
+alter table dm_dataset_column modify column type_name varchar(255);
