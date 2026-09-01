@@ -28,7 +28,7 @@ Employees work in the browser, zero install. Deploy on your own infrastructure.
   <img src="docs/assets/architecture-diagram.png" alt="Open Insight Architecture" width="720">
 </p>
 
-### ONE-PI Agent Architecture
+### Native AI Coding Architecture
 
 ONE-PI connects to an extensible set of expert agents, each equipped with Prompt, MCP, API, and Skill capabilities.
 
