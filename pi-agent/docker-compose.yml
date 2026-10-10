@@ -11,6 +11,14 @@ services:
       - .env
     environment:
       - HOME=/home/codeuser
+      # Persistent pip/npm caches inside the pi-data volume (speed up skill
+      # dependency re-installs; without these the caches live in the container
+      # layer and are lost on every restart/recreate).
+      - PIP_CACHE_DIR=/home/codeuser/.pi/.cache/pip
+      - npm_config_cache=/home/codeuser/.pi/.cache/npm
+      # Optional mirrors for CN environments (skill dependency installs):
+      # - PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
+      # - npm_config_registry=https://registry.npmmirror.com
     volumes:
       - ./pi-data:/home/codeuser/.pi
       - ./skill-repo:/app/skill-repo

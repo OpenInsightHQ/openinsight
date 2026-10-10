@@ -28,6 +28,7 @@ update_env_key .env PI_MODEL "${PI_MODEL:-minimax-m2.5-free}"
 # 创建必要的目录
 echo "创建目录结构..."
 mkdir -p pi-data skill-repo
+mkdir -p pi-data/.cache/pip pi-data/.cache/npm
 chmod 777 pi-data skill-repo
 
 # 替换 docker-compose.yml 中的配置
