@@ -25,6 +25,11 @@ update_env_key .env OPENCODE_API_KEY "${OPENCODE_API_KEY}"
 update_env_key .env PI_PROVIDER "${PI_PROVIDER:-opencode}"
 update_env_key .env PI_MODEL "${PI_MODEL:-minimax-m2.5-free}"
 
+# 3.0.7 迁移：会话级 runtime guard 预算默认关闭（0）。
+# 只迁移旧默认值（1000 / 50000000），客户自定义过的其它数值不动。
+echo "检查会话级 runtime guard 配置..."
+migrate_disabled_session_budget .env
+
 # 创建必要的目录
 echo "创建目录结构..."
 mkdir -p pi-data skill-repo

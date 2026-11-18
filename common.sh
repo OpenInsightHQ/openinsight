@@ -180,6 +180,40 @@ update_env_key_strict() {
     fi
 }
 
+#============================================================
+# 迁移"会话级 runtime guard 预算"为关闭（0）
+# 旧版本曾使用的默认值：PI_SESSION_MAX_MODEL_CALLS=1000 / PI_SESSION_MAX_TOKENS=50000000
+# 这两个会话累计上限会让普通长对话在几百轮后触发 429，用户只能新开对话。
+# 规则：
+#   - 键不存在或值为空 → 写入 0
+#   - 值仍等于旧默认值   → 改为 0（老客户升级自动生效）
+#   - 其它值             → 保留（视为客户自定义）
+# 用法: migrate_disabled_session_budget <file>
+#============================================================
+migrate_disabled_session_budget() {
+    local file="$1"
+    if [ ! -f "$file" ]; then
+        return 0
+    fi
+    local pair key legacy current
+    for pair in "PI_SESSION_MAX_MODEL_CALLS:1000" "PI_SESSION_MAX_TOKENS:50000000"; do
+        key="${pair%%:*}"
+        legacy="${pair##*:}"
+        if ! grep -q "^${key}=" "$file" 2>/dev/null; then
+            echo "  迁移: 新增 ${key}=0（会话级预算默认关闭）"
+            printf '%s=0\n' "${key}" >> "$file"
+            continue
+        fi
+        current="$(sed -n "s/^${key}=//p" "$file" | tail -n 1 | tr -d '[:space:]')"
+        if [ -z "${current}" ] || [ "${current}" = "${legacy}" ]; then
+            echo "  迁移: ${key}=${current:-<空>} -> 0（会话级预算默认关闭）"
+            update_env_key "$file" "${key}" "0"
+        else
+            echo "  保留: ${key}=${current}（非旧默认值，视为自定义配置）"
+        fi
+    done
+}
+
 # 判断是否使用外部中间件
 # 用法: is_external <变量名>
 # 例如: is_external USE_EXTERNAL_MYSQL
