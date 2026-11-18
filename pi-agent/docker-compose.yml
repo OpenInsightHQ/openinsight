@@ -11,6 +11,13 @@ services:
       - .env
     environment:
       - HOME=/home/codeuser
+      # Session-lifetime runtime guards are forced off here: docker compose gives
+      # `environment` precedence over `env_file`, so this wins over any
+      # PI_SESSION_MAX_* still left in the client's .env (including the
+      # 1000 / 50000000 values older guidance told clients to add). Raise them
+      # here if a deployment really needs a hard cap.
+      - PI_SESSION_MAX_TOKENS=0
+      - PI_SESSION_MAX_MODEL_CALLS=0
       # Persistent pip/npm caches inside the pi-data volume (speed up skill
       # dependency re-installs; without these the caches live in the container
       # layer and are lost on every restart/recreate).
